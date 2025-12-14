@@ -41,7 +41,7 @@ Este script permite consultar documentos de la colección `loan` en MongoDB Atla
 3. Configura las variables de entorno creando un archivo `.env` con:
    ```
    # Configuración de MongoDB
-   MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/
+   MONGODB_URI=mongodb+srv://
    DATABASE_NAME=middleware
    
    # IDs de entidades financieras
