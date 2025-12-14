@@ -24,8 +24,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 git branch: 'main',
-                    credentialsId: 'github-org-token',
-                    url: 'https://github.com/ORG/REPO.git'
+                    url: 'https://github.com/Jemena12/leancore-consistency-checker.git'
             }
         }
 
