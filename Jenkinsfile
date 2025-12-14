@@ -1,5 +1,10 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'python:3.11-slim'
+            args '-u root'
+        }
+    }
 
     triggers {
         cron('''
@@ -28,11 +33,10 @@ pipeline {
             }
         }
 
-        stage('Setup Python') {
+        stage('Install dependencies') {
             steps {
                 sh '''
-                    python3 -m venv venv
-                    . venv/bin/activate
+                    python --version
                     pip install --upgrade pip
                     pip install -r requirements.txt
                 '''
@@ -44,14 +48,8 @@ pipeline {
                 script {
                     def hour = new Date().format("H", TimeZone.getTimeZone('America/Bogota'))
 
-                    sh '''
-                        . venv/bin/activate
-                    '''
-
                     if (hour == "7") {
-                        echo "Ejecutando scripts de la jornada 7 AM"
                         sh '''
-                            . venv/bin/activate
                             python main.py
                             python pagos_no_aplicados.py
                             python mora_saldo_cero.py
@@ -59,23 +57,12 @@ pipeline {
                     }
 
                     if (hour == "12" || hour == "17") {
-                        echo "Ejecutando mora_saldo_cero.py"
                         sh '''
-                            . venv/bin/activate
                             python mora_saldo_cero.py
                         '''
                     }
                 }
             }
-        }
-    }
-
-    post {
-        failure {
-            echo "❌ Pipeline falló"
-        }
-        success {
-            echo "✅ Pipeline ejecutado correctamente"
         }
     }
 }
